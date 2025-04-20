@@ -1,0 +1,17 @@
+:root {
+  font-family: 'montserrat', Arial, Helvetica, sans-serif;
+  --color-principal: #3802FA;
+  --color-secundario: #370adb;
+--blanco: #e7e7f7;
+
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+ }
