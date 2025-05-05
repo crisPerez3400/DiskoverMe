@@ -10,6 +10,7 @@ export const useArtistsStore = defineStore('artists', () => {
   
   const currentIndex = ref(0);
   const isLoading = ref(true); // Start with loading state true
+  const currentUser = ref(null); // Agregamos el currentUser como un ref
 
   // Función para obtener el artista y sus top tracks desde el servidor Express
   const fetchProfiles = async () => {
@@ -83,10 +84,11 @@ export const useArtistsStore = defineStore('artists', () => {
     };
   };
 
-  console.log(profiles.value) 
-
-  // Llamar a fetchProfiles para obtener los perfiles/artistas al iniciar el store
-  fetchProfiles();
+  // Método para establecer el usuario actual
+  const setCurrentUser = (user) => {
+    currentUser.value = user;
+    console.log('Usuario actual establecido en el store:', currentUser.value);
+  };
 
   const visibleProfiles = computed(() => {
     if (profiles.value.tracks.length === 0) return [];
@@ -95,14 +97,17 @@ export const useArtistsStore = defineStore('artists', () => {
 
   // Función para cuando el usuario hace swipe a la izquierda (rechazar)
   const swipeLeft = async () => {
+    // Aquí puedes usar currentUser.value si necesitas
+    // Por ejemplo: console.log(`${currentUser.value.username} rechazó un track`);
     await fetchProfiles();
   };
 
   // Función para cuando el usuario hace swipe a la derecha (aceptar)
   const swipeRight = async () => {
- 
-      await fetchProfiles();
-   
+    // Aquí puedes usar currentUser.value si necesitas
+    // Por ejemplo: guardar la preferencia del usuario
+    await fetchProfiles();
+    
   };
   
   const nextTrack = () => {
@@ -117,6 +122,9 @@ export const useArtistsStore = defineStore('artists', () => {
     }
   };
 
+  // Llamar a fetchProfiles para obtener los perfiles/artistas al iniciar el store
+  fetchProfiles();
+
   return {
     profiles,
     currentIndex,
@@ -125,6 +133,8 @@ export const useArtistsStore = defineStore('artists', () => {
     swipeRight,
     nextTrack,
     isLoading,
-    fetchProfiles  // Exponemos la función para poder refrescar los datos manualmente
+    fetchProfiles,  // Exponemos la función para poder refrescar los datos manualmente
+    currentUser,    // Exponemos currentUser como getter
+    setCurrentUser  // Exponemos el método para establecer el usuario
   };
 });

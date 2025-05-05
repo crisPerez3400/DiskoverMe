@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { useArtistsStore } from './stores/useArtistsStore'; // Importa el store aquí
 
 const router = useRouter();
 
@@ -15,7 +16,7 @@ const fetchCurrentUser = async () => {
     const response = await fetch('http://localhost:3000/api/current-user');
     const data = await response.json();
     if (data.success) {
-      currentUser.value = data.user;
+      currentUser.value = data.data; // Cambiado de data.user a data.data
       console.log('Usuario actual:', currentUser.value);
     }
   } catch (error) {
@@ -43,7 +44,11 @@ const navigateTo = (route) => {
 
 // Cargar información del usuario al montar el componente
 onMounted(() => {
-  fetchCurrentUser();
+  fetchCurrentUser().then(() => {
+    // Pasar el usuario actual al store
+    const artistsStore = useArtistsStore();
+    artistsStore.currentUser = currentUser.value;
+  });
 });
 </script>
 

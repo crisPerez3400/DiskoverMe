@@ -7,14 +7,17 @@ const artistsStore = useArtistsStore();
 
 const profiles = computed(() => artistsStore.visibleProfiles);
 const isLoading = computed(() => artistsStore.isLoading);
+const currentUser = computed(() => artistsStore.currentUser); // Acceso al usuario desde el store
 
 onMounted(() => {
   // Cargar datos específicos para la vista Diskover si es necesario
+  console.log('Usuario en DiskoverView:', currentUser.value);
 });
 </script>
 
 <template>
   <div class="diskover-view">
+    
     <!-- Loading indicator -->
     <div v-if="isLoading" class="loading-container">
       <div class="loading-spinner"></div>
@@ -51,6 +54,16 @@ onMounted(() => {
 </template>
 
 <style scoped>
+/* User greeting styling */
+.user-greeting {
+  text-align: center;
+  padding: 0.5rem;
+  background-color: white;
+  color: var(--color-secundario);
+  font-weight: 500;
+  border-bottom: 1px solid #eee;
+}
+
 /* Loading indicator */
 .loading-container {
   flex: 1;
