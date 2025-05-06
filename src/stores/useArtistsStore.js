@@ -98,7 +98,6 @@ export const useArtistsStore = defineStore('artists', () => {
   // Función para cuando el usuario hace swipe a la izquierda (rechazar)
   const swipeLeft = async () => {
     // Aquí puedes usar currentUser.value si necesitas
-    // Por ejemplo: console.log(`${currentUser.value.username} rechazó un track`);
     await fetchProfiles();
   };
 

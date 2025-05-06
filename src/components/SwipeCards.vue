@@ -277,6 +277,8 @@ onMounted(() => {
   touch-action: pan-y;
   user-select: none;
   transition: transform 0.2s ease, opacity 0.2s ease;
+    max-width:463px;
+
 }
 
 .card-image {

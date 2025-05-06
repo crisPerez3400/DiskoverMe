@@ -1,7 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { useArtistsStore } from './stores/useArtistsStore';
 
 // Estado para el menú desplegable
 const isMenuOpen = ref(false);
@@ -31,7 +30,8 @@ const fetchCurrentUser = async () => {
 };
 
 // Función para alternar el estado del menú
-const toggleMenu = () => {
+const toggleMenu = (event) => {
+  event.stopPropagation();
   isMenuOpen.value = !isMenuOpen.value;
 };
 
@@ -71,11 +71,15 @@ const isGenreSelected = (genre) => {
 
 // Cargar información del usuario al montar el componente
 onMounted(() => {
-  fetchCurrentUser().then(() => {
-    // Pasar el usuario actual al store
-    const artistsStore = useArtistsStore();
-    artistsStore.currentUser = currentUser.value;
-  });
+  fetchCurrentUser();
+  
+  // Agregar evento para cerrar el menú al hacer clic fuera
+  document.addEventListener('click', closeMenu);
+  
+  // Limpiar el evento al desmontar
+  return () => {
+    document.removeEventListener('click', closeMenu);
+  };
 });
 </script>
 
@@ -192,11 +196,18 @@ onMounted(() => {
 </template>
 
 <style scoped>
+/* Variables CSS */
+:root {
+  --color-secundario: #6200ea;
+  --blanco: #ffffff;
+}
+
+/* Estilos base para móvil */
 .diskover-container {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  max-width: 480px;
+  max-width: 100%;
   margin: 0 auto;
   background-color: #f5f7fa;
   position: relative;
@@ -377,4 +388,105 @@ onMounted(() => {
 .section-button.active {
   background-color: rgba(255, 255, 255, 0.2);
 }
+
+/* Media queries para hacer la aplicación responsive */
+@media (min-width: 768px) {
+  .diskover-container {
+    max-width: 90%;
+    margin: 0 auto;
+    height: 100vh;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  
+  .header {
+    padding: 1rem 2rem;
+  }
+  
+  .logo {
+    font-size: 1.75rem;
+  }
+  
+  .logo-img {
+    height: 45px;
+  }
+  
+  .menu-dropdown {
+    width: 300px;
+  }
+  
+  .genre-buttons {
+    gap: 10px;
+  }
+  
+  .genre-button {
+    padding: 8px 14px;
+    font-size: 0.9rem;
+  }
+  
+  .section-button {
+    font-size: 1.1rem;
+    padding: 0.6rem 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .diskover-container {
+    max-width: 1200px;
+    margin: 20px auto;
+    height: calc(100vh - 40px);
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+  
+  .header {
+    padding: 1rem 2.5rem;
+  }
+  
+  .section-buttons-container {
+    padding: 1.2rem;
+  }
+  
+  .section-button {
+    padding: 0.7rem 2rem;
+  }
+  
+  .menu-dropdown {
+    width: 350px;
+    padding: 16px;
+  }
+  
+  .genre-buttons {
+    gap: 12px;
+  }
+  
+  .slider-track {
+    height: 40px;
+  }
+  
+  .slider-text {
+    font-size: 0.95rem;
+  }
+}
+
+@media (min-width: 1440px) {
+  .diskover-container {
+    max-width: 1400px;
+  }
+  
+  .header {
+    padding: 1.2rem 3rem;
+  }
+  
+  .logo {
+    font-size: 2rem;
+  }
+  
+  .logo-img {
+    height: 50px;
+  }
+}
+
+
 </style>
