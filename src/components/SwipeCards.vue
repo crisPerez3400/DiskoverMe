@@ -278,7 +278,6 @@ onMounted(() => {
   user-select: none;
   transition: transform 0.2s ease, opacity 0.2s ease;
     max-width:463px;
-
 }
 
 .card-image {
@@ -343,6 +342,7 @@ onMounted(() => {
 .card-info {
   padding: rem;
   height: 25%;
+  
 }
 
 .track-name {
@@ -360,6 +360,7 @@ onMounted(() => {
 
 .track-duration {
   display: block;
+  font-size: 1rem;
   margin-bottom: 0.5rem;
 }
 

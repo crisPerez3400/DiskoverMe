@@ -12,8 +12,10 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+
 }
 
 html, body {
   height: 100%;
- }
+  background: #b5affa;
+  background-image: linear-gradient(to right top, #91b6ee, #6a9dfa, #4d81ff, #495fff, #5e2ff9); }
