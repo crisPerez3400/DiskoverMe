@@ -1,14 +1,18 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { useArtistsStore } from './stores/useArtistsStore'; // Importa el store aquí
-
-const router = useRouter();
+import { useArtistsStore } from './stores/useArtistsStore';
 
 // Estado para el menú desplegable
 const isMenuOpen = ref(false);
 // Estado para almacenar la información del usuario actual
 const currentUser = ref(null);
+// Estado para el slider de géneros
+const sliderPosition = ref(1); // Posición inicial (1, 2, o 3)
+// Estado para los géneros seleccionados
+const selectedGenres = ref([]);
+
+const router = useRouter();
 
 // Función para obtener información del usuario actual
 const fetchCurrentUser = async () => {
@@ -16,7 +20,7 @@ const fetchCurrentUser = async () => {
     const response = await fetch('http://localhost:3000/api/current-user');
     const data = await response.json();
     if (data.success) {
-      currentUser.value = data.data; // Cambiado de data.user a data.data
+      currentUser.value = data.data;
       console.log('Usuario actual:', currentUser.value);
     }
   } catch (error) {
@@ -40,6 +44,29 @@ const closeMenu = () => {
 const navigateTo = (route) => {
   router.push(route);
   closeMenu();
+};
+
+// Función para cambiar la posición del slider
+const setSliderPosition = (position) => {
+  sliderPosition.value = position;
+};
+
+// Función para manejar la selección de géneros
+const toggleGenre = (genre) => {
+  const index = selectedGenres.value.indexOf(genre);
+  if (index === -1) {
+    // Si el género no está seleccionado, lo añadimos
+    selectedGenres.value.push(genre);
+  } else {
+    // Si ya está seleccionado, lo quitamos
+    selectedGenres.value.splice(index, 1);
+  }
+  console.log('Géneros seleccionados:', selectedGenres.value);
+};
+
+// Verificar si un género está seleccionado
+const isGenreSelected = (genre) => {
+  return selectedGenres.value.includes(genre);
 };
 
 // Cargar información del usuario al montar el componente
@@ -73,17 +100,47 @@ onMounted(() => {
           </svg>
         </button>
         
-        <!-- Menú desplegable -->
-        <div class="menu-dropdown" v-if="isMenuOpen">
-          <ul>
-            <li class="user-info-menu" v-if="currentUser">
-              <span>Usuario: {{ currentUser.username }}</span>
-            </li>
-            <li><a href="#" @click.stop="closeMenu">Mi perfil</a></li>
-            <li><a href="#" @click.stop="closeMenu">Configuración</a></li>
-            <li><a href="#" @click.stop="closeMenu">Ayuda</a></li>
-            <li><a href="#" @click.stop="closeMenu">Cerrar sesión</a></li>
-          </ul>
+        <!-- Menú desplegable con géneros musicales y slider -->
+        <div class="menu-dropdown" v-if="isMenuOpen" @click.stop>
+          <div class="genre-buttons">
+            <button 
+              v-for="genre in ['Rock', 'Pop', 'Hip-Hop', 'Electrónica', 'Jazz', 'Clásica', 'Reggaeton', 'Metal']" 
+              :key="genre"
+              class="genre-button" 
+              :class="{ 'selected': isGenreSelected(genre) }"
+              @click="toggleGenre(genre)"
+            >
+              {{ genre }}
+            </button>
+          </div>
+          
+          <!-- Slider de 3 posiciones -->
+          <div class="slider-container">
+            <div class="slider-label">Preferencia:</div>
+            <div class="slider-track">
+              <div 
+                class="slider-position" 
+                :class="{ 'active': sliderPosition === 1 }"
+                @click.stop="setSliderPosition(1)"
+              >
+                <span class="slider-text">Baja</span>
+              </div>
+              <div 
+                class="slider-position" 
+                :class="{ 'active': sliderPosition === 2 }"
+                @click.stop="setSliderPosition(2)"
+              >
+                <span class="slider-text">Media</span>
+              </div>
+              <div 
+                class="slider-position" 
+                :class="{ 'active': sliderPosition === 3 }"
+                @click.stop="setSliderPosition(3)"
+              >
+                <span class="slider-text">Alta</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -211,43 +268,83 @@ onMounted(() => {
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  width: 180px;
+  width: 250px;
   z-index: 9999;
   margin-top: 8px;
   overflow: hidden;
+  padding: 12px;
 }
 
-.menu-dropdown ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+/* Estilos para los botones de géneros */
+.genre-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
 }
 
-.menu-dropdown li {
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.user-info-menu {
-  padding: 12px 16px;
-  background-color: #f9f9f9;
-  color: #666;
-  font-size: 0.9rem;
-}
-
-.menu-dropdown li:last-child {
-  border-bottom: none;
-}
-
-.menu-dropdown a {
-  display: block;
-  padding: 12px 16px;
+.genre-button {
+  background-color: #f0f0f0;
+  border: none;
+  border-radius: 16px;
+  padding: 6px 12px;
+  font-size: 0.85rem;
   color: #333;
-  text-decoration: none;
-  transition: background-color 0.2s;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.menu-dropdown a:hover {
-  background-color: #f5f5f5;
+.genre-button:hover {
+  background-color: #e0e0e0;
+}
+
+.genre-button.selected {
+  background-color: var(--color-secundario);
+  color: white;
+}
+
+/* Estilos para el slider de 3 posiciones */
+.slider-container {
+  margin-top: 12px;
+  border-top: 1px solid #f0f0f0;
+  padding-top: 12px;
+}
+
+.slider-label {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.slider-track {
+  display: flex;
+  background-color: #f0f0f0;
+  border-radius: 20px;
+  height: 36px;
+  position: relative;
+  overflow: hidden;
+}
+
+.slider-position {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  color: #666;
+}
+
+.slider-position.active {
+  background-color: var(--color-secundario);
+  color: white;
+  font-weight: 500;
+}
+
+.slider-text {
+  font-size: 0.85rem;
+  z-index: 2;
 }
 
 .main-content {

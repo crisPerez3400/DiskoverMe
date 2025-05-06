@@ -112,7 +112,7 @@ onMounted(() => {
 }
 
 .rank-number.top-three {
-  background-color: #fe3c72;
+  background-color: #866aeb;
   color: white;
 }
 

@@ -269,7 +269,7 @@ onMounted(() => {
 .swipe-card {
   position: absolute;
   width: 100%;
-  max-width: 400px;
+  max-width: 600px;
   height: 610px;
    background-color: white;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
@@ -371,7 +371,7 @@ onMounted(() => {
 
 .popularity-fill {
   height: 100%;
-  background-color: #fe3c72;
+  background-color: var(--color-tercero);
 }
 
 .swipe-indicator {
